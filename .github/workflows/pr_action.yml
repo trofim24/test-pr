@@ -1,8 +1,4 @@
-on:
- pull_request:
-    # Sequence of patterns matched against refs/heads
-    branches:
-      - master
+on: pull_request
 
 jobs:
   mirror:
