@@ -1,0 +1,7 @@
+on: pull_request
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
