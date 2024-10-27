@@ -46,7 +46,6 @@ jobs:
           repository: ONLYOFFICE/sdkjs
           token: ${{ secrets.READ_PAT }}
           ref: master
-          fetch-depth: 0
           path: sdkjs
 
       - name: Checkout sdkjs-forms repository
