@@ -20,7 +20,6 @@ jobs:
           repository: ONLYOFFICE/build_tools
           token: ${{ secrets.READ_PAT }}
           ref: master
-          fetch-depth: 0
           path: build_tools
 
       - name: Checkout repository with examples office-js-api-declarations
@@ -61,6 +60,7 @@ jobs:
       
       - name: Set env
         run: |
+          git -C build_tools fetch || echo "Failed to fetch in build_tools"
           branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | sed 's|origin/||; s/^ *//; s/ *$//' | paste -sd "," -)
           echo "branches=$branches" >> $GITHUB_ENV
           echo "$branches"
