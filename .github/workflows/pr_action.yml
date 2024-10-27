@@ -28,7 +28,7 @@ jobs:
       
       - name: Set env
         run: |
-          branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | paste -sd "," -)
+          branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | sed 's|origin/||; s/^ *//; s/ *$//' | paste -sd "," -)
           echo "branches=$branches" >> $GITHUB_ENV
           echo "$branches"
 
