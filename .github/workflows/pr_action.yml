@@ -18,6 +18,14 @@ jobs:
           path: build_tools
           fetch-depth: 0
       
+      - name: Checkout sdkjs-forms repository
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/sdkjs-forms
+          token: ${{ secrets.READ_PAT }}
+          ref: master
+          path: sdkjs-forms
+      
       - name: Set env
         run: |
           branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | sed 's|origin/||; s/^ *//; s/ *$//' | paste -sd "," -)
@@ -30,4 +38,6 @@ jobs:
         run: |
           for branch in $(echo "$branches" | tr ',' '\n'); do
             echo "Branch: $branch"
+            git -C sdkjs-forms fetch origin "$branch:$branch" || echo "Branch $branch does not exist in sdkjs-forms"
+            git -C sdkjs-forms checkout "$branch" || echo "Failed to checkout $branch in sdkjs-forms"
           done
