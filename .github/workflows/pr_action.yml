@@ -38,5 +38,5 @@ jobs:
         run: |
           for branch in $(echo "$branches" | tr ',' '\n'); do
             echo "Branch: $branch"
-            git -C sdkjs-forms checkout "$branch" || echo "Failed to checkout $branch in sdkjs-forms"
+            git -C sdkjs-forms switch "$branch" || echo "Failed to switch $branch in sdkjs-forms"
           done
