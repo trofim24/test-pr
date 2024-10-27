@@ -11,6 +11,9 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+
       - name: check out repository
         uses: actions/checkout@v4
 
@@ -68,6 +71,11 @@ jobs:
           echo "branches=$branches" >> $GITHUB_ENV
           echo "$branches"
 
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Generate docs for each branch
         run: |
           for branch in $(echo "$branches" | tr ',' '\n'); do
@@ -77,4 +85,14 @@ jobs:
             git -C office-js-api switch "$branch" || git -C office-js-api switch -c "$branch" || echo "Failed to create $branch in office-js-api"
             git -C sdkjs switch "$branch" || echo "Failed to switch $branch in sdkjs"
             git -C sdkjs-forms switch "$branch" || echo "Failed to switch $branch in sdkjs-forms"
+
+            cd build_tools/scripts/sdkjs_common/jsdoc
+            npm install
+            python generate_docs_json.py
+            python generate_docs_plugins_json.py
+
+            cd ../../../../office-js-api-declarations
+            git add .
+            git commit -m "Add documentation update from GitHub Actions"
+            git push origin $branch
           done
