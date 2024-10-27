@@ -19,7 +19,7 @@ jobs:
       
       - name: Set env
         run: |
-          release_branches=$(git -C build_tools branch -r);
+          release_branches=$(git -C build_tools branch -r | grep -E '^ *origin/release/v');
           echo "GITHUB_SHA_SHORT_2=123" >> $GITHUB_ENV
       - name: Test1
         run: echo $GITHUB_SHA_SHORT_2
