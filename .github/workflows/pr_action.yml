@@ -33,11 +33,8 @@ jobs:
           echo "branches=$branches" >> $GITHUB_ENV
           echo "$branches"
 
-      - name: Test1
-        run: echo $branches
       - name: Run for each branch
         run: |
-          git -C sdkjs-forms branch -v -a
           for branch in $(echo "$branches" | tr ',' '\n'); do
             echo "Branch: $branch"
             git -C sdkjs-forms switch "$branch" || echo "Failed to switch $branch in sdkjs-forms"
