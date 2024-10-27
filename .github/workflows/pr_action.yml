@@ -31,9 +31,7 @@ jobs:
           echo "$hotfix_branches"
 
       
-      - name: Test2
-        run: echo ${{ env.release }}
       - name: Test1
-        run: echo $hotfix
+        run: echo $release
       - name: Test2
-        run: echo ${{ env.hotfix }}
+        run: echo $hotfix
