@@ -6,26 +6,58 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
       - name: check out repository
         uses: actions/checkout@v4
-      
+
       - name: Checkout build_tools repository
         uses: actions/checkout@v4
         with:
           repository: ONLYOFFICE/build_tools
           token: ${{ secrets.READ_PAT }}
           ref: master
-          path: build_tools
           fetch-depth: 0
-      
+          path: build_tools
+
+      - name: Checkout repository with examples office-js-api-declarations
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/office-js-api-declarations
+          token: ${{ secrets.READ_PAT }}
+          ref: master
+          fetch-depth: 0
+          path: office-js-api-declarations
+
+      - name: Checkout repository with examples office-js-api
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/office-js-api
+          token: ${{ secrets.READ_PAT }}
+          ref: master
+          fetch-depth: 0
+          path: office-js-api
+
+      - name: Checkout sdkjs repository
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/sdkjs
+          token: ${{ secrets.READ_PAT }}
+          ref: master
+          fetch-depth: 0
+          path: sdkjs
+
       - name: Checkout sdkjs-forms repository
         uses: actions/checkout@v4
         with:
           repository: ONLYOFFICE/sdkjs-forms
           token: ${{ secrets.READ_PAT }}
           ref: master
-          path: sdkjs-forms
           fetch-depth: 0
+          path: sdkjs-forms
       
       - name: Set env
         run: |
@@ -33,9 +65,13 @@ jobs:
           echo "branches=$branches" >> $GITHUB_ENV
           echo "$branches"
 
-      - name: Run for each branch
+      - name: Generate docs for each branch
         run: |
           for branch in $(echo "$branches" | tr ',' '\n'); do
             echo "Branch: $branch"
+            git -C build_tools switch "$branch" || echo "Failed to switch $branch in build_tools"
+            git -C office-js-api-declarations switch "$branch" || echo "Failed to switch $branch in office-js-api-declarations"
+            git -C office-js-api switch "$branch" || echo "Failed to switch $branch in office-js-api"
+            git -C sdkjs switch "$branch" || echo "Failed to switch $branch in sdkjs"
             git -C sdkjs-forms switch "$branch" || echo "Failed to switch $branch in sdkjs-forms"
           done
