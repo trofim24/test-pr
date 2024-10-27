@@ -23,9 +23,16 @@ jobs:
           release_branches=$(git -C build_tools branch -r | grep -o 'origin/release[^ ]*' | sed 's|origin/||')
           hotfix_branches=$(git -C build_tools branch -r | grep -o 'origin/hotfix[^ ]*' | sed 's|origin/||')
 
-          echo "release=$release_branches" >> $GITHUB_ENV
-          echo "hotfix=$hotfix_branches" >> $GITHUB_ENV
 
           echo "$release_branches"
           echo "_________________"
           echo "$hotfix_branches"
+
+      - name: Test1
+          run: echo $release
+      - name: Test2
+          run: echo ${{ env.release }}
+      - name: Test1
+          run: echo $hotfix
+      - name: Test2
+          run: echo ${{ env.hotfix }}
