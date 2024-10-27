@@ -22,11 +22,18 @@ jobs:
         run: |
           release_branches=$(git -C build_tools branch -r | grep -o 'origin/release[^ ]*' | sed 's|origin/||')
           hotfix_branches=$(git -C build_tools branch -r | grep -o 'origin/hotfix[^ ]*' | sed 's|origin/||')
+
+          echo "release=$release_branches" >> $GITHUB_ENV
+          echo "hotfix=$hotfix_branches" >> $GITHUB_ENV
+
           echo "$release_branches"
           echo "_________________"
           echo "$hotfix_branches"
-          echo "GITHUB_SHA_SHORT_2=123" >> $GITHUB_ENV
       - name: Test1
-        run: echo $GITHUB_SHA_SHORT_2
+        run: echo $release
       - name: Test2
-        run: echo ${{ env.GITHUB_SHA_SHORT_2 }}
+        run: echo ${{ env.release }}
+      - name: Test1
+        run: echo $hotfix
+      - name: Test2
+        run: echo ${{ env.hotfix }}
