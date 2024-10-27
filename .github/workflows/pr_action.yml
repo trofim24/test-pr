@@ -14,7 +14,6 @@ jobs:
         with:
           repository: ONLYOFFICE/build_tools
           token: ${{ secrets.READ_PAT }}
-          ref: release/v8.2.0
           path: build_tools
       
       - name: Set env
