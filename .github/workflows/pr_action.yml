@@ -20,9 +20,11 @@ jobs:
       
       - name: Set env
         run: |
-          release_branches=$(git -C build_tools branch -r | grep -o 'origin/release[^ ]*' | sed 's|origin/||')
-          hotfix_branches=$(git -C build_tools branch -r | grep -o 'origin/hotfix[^ ]*' | sed 's|origin/||')
+          release_branches=$(git -C build_tools branch -r | grep -o 'origin/release[^ ]*' | sed 's|origin/||' | paste -sd "," -)
+          hotfix_branches=$(git -C build_tools branch -r | grep -o 'origin/hotfix[^ ]*' | sed 's|origin/||' | paste -sd "," -)
 
+          echo "release=$release_branches" >> $GITHUB_ENV
+          echo "hotfix=$hotfix_branches" >> $GITHUB_ENV
 
           echo "$release_branches"
           echo "_________________"
