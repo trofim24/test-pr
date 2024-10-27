@@ -25,6 +25,7 @@ jobs:
           token: ${{ secrets.READ_PAT }}
           ref: master
           path: sdkjs-forms
+          fetch-depth: 0
       
       - name: Set env
         run: |
