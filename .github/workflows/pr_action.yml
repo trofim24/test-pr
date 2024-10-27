@@ -19,30 +19,8 @@ jobs:
       
       - name: Set env
         run: |
-          # define variables
-          tests=16
-          failures=2
-
-          # set them as GitHub ENV variables
-          echo "Tests=$tests" >> $GITHUB_ENV
-          echo "Failures=$failures" >> $GITHUB_ENV
-          echo "${{ env.Failures }} out of ${{ env.Tests }} tests failed on CI"
-
-          echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
           echo "GITHUB_SHA_SHORT_2=123" >> $GITHUB_ENV
-      - name: Test1
-        run: echo $GITHUB_SHA_SHORT
-      - name: Test2
-        run: echo ${{ env.GITHUB_SHA_SHORT }}
       - name: Test1
         run: echo $GITHUB_SHA_SHORT_2
       - name: Test2
         run: echo ${{ env.GITHUB_SHA_SHORT_2 }}
-      - name: Test1
-        run: echo $Failures
-      - name: Test2
-        run: echo ${{ env.Failures }}
-      - name: Test1
-        run: echo $Tests
-      - name: Test2
-        run: echo ${{ env.Tests }}
