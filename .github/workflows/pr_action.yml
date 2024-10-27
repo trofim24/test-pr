@@ -74,7 +74,7 @@ jobs:
             echo "Branch: $branch"
             git -C build_tools switch "$branch" || echo "Failed to switch $branch in build_tools"
             git -C office-js-api-declarations switch "$branch" || git -C office-js-api-declarations switch -c "$branch" || echo "Failed to create $branch in office-js-api-declarations"
-            git -C office-js-api switch "$branch" || git -C office-js-api switch "$branch" || echo "Failed to create $branch in office-js-api"
+            git -C office-js-api switch "$branch" || git -C office-js-api switch -c "$branch" || echo "Failed to create $branch in office-js-api"
             git -C sdkjs switch "$branch" || echo "Failed to switch $branch in sdkjs"
             git -C sdkjs-forms switch "$branch" || echo "Failed to switch $branch in sdkjs-forms"
           done
