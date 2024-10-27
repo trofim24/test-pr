@@ -26,3 +26,7 @@ jobs:
 
       - name: Test1
         run: echo $branches
+      run: |
+          for branch in $(echo "$branches" | tr ',' '\n'); do
+            echo "Branch: $branch"
+          done
