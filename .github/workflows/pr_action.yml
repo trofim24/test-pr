@@ -96,6 +96,7 @@ jobs:
               git add .
               git commit -m "Add documentation update from GitHub Actions"
               git push origin $branch
+              cd ..
             else
               echo "Directory for build does not exist. Skipping branch."
             fi
