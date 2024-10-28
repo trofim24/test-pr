@@ -62,7 +62,7 @@ jobs:
           git -C build_tools fetch --no-tags || echo "Failed to fetch in build_tools"
           git -C office-js-api-declarations fetch --no-tags || echo "Failed to fetch in office-js-api-declarations"
           git -C office-js-api fetch --no-tags || echo "Failed to fetch in office-js-api"
-          git -C sdkjs fetch --no-tags || echo "Failed to fetch in sdkjs"
+          #git -C sdkjs fetch --no-tags || echo "Failed to fetch in sdkjs"
           git -C sdkjs-forms fetch --no-tags || echo "Failed to fetch in sdkjs-forms"
 
       - name: Set env
@@ -70,6 +70,11 @@ jobs:
           branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | sed 's|origin/||; s/^ *//; s/ *$//' | paste -sd "," -)
           echo "branches=$branches" >> $GITHUB_ENV
           echo "$branches"
+
+          max_branch=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | awk '{sub("origin/", ""); print}' | sort -V | tail -n 1)
+          echo "max_branch=$max_branch" >> $GITHUB_ENV
+          echo "$max_branch"
+
 
       - name: Set up Git
         run: |
