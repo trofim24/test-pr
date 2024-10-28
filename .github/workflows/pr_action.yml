@@ -73,6 +73,9 @@ jobs:
           branches2=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | awk '{sub("origin/", ""); print}')
           echo "$branches2"
 
+          max_version=$(echo "$branches2" | awk -F'/' '{print $NF}' | sort -V | tail -n 1)
+          echo "$max_version"
+
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
