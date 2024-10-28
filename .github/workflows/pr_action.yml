@@ -96,11 +96,14 @@ jobs:
               python generate_docs_plugins_json.py
 
               cd ../../../../office-js-api-declarations
-              git add .
-              git commit -m "Add documentation update from GitHub Actions"
-              git push origin $branch
+              if git diff --exit-code; then
+                git add .
+                git commit -m "Add documentation update from GitHub Actions"
+                git push origin $branch
+              else
+                echo "Nothing to commit in $branch in office-js-api-declarations"
               cd ..
             else
-              echo "Directory for build does not exist. Skipping branch."
+              echo "Directory for build does not exist. Skipping $branch branch."
             fi
           done
