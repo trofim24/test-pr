@@ -73,6 +73,10 @@ jobs:
 
           branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | awk '{sub("origin/", ""); print}')
           echo "$branches"
+          max_version=$(echo "$branches" | awk -F'/' '{print $NF}' | sort -V | tail -n 1)
+          max_branch=$(echo "$branches" | grep "$max_version")
+          echo "$max_version"
+          echo "$max_branch"
 
 
       - name: Set up Git
