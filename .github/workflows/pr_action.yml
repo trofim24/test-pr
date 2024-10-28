@@ -94,15 +94,15 @@ jobs:
               npm install
               python generate_docs_json.py
               python generate_docs_plugins_json.py
+              cd ../../../../
 
-              cd ../../../../office-js-api-declarations
-              if git diff --exit-code; then
-                git add .
-                git commit -m "Add documentation update from GitHub Actions"
-                git push origin $branch
+              if git -C office-js-api-declarations diff --exit-code; then
+                git -C office-js-api-declarations add .
+                git -C office-js-api-declarations commit -m "Add documentation update from GitHub Actions"
+                git -C office-js-api-declarations push origin $branch
               else
                 echo "Nothing to commit in $branch in office-js-api-declarations"
-              cd ..
+              fi
             else
               echo "Directory for build does not exist. Skipping $branch branch."
             fi
