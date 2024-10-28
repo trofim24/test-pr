@@ -67,18 +67,8 @@ jobs:
 
       - name: Set env
         run: |
-          #branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | sed 's|origin/||; s/^ *//; s/ *$//' | paste -sd "," -)
-          #echo "branches=$branches" >> $GITHUB_ENV
-          #echo "$branches"
-          
-
-          branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | awk '{sub("origin/", ""); print}')
+          branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | sed 's|origin/||; s/^ *//; s/ *$//' | paste -sd "," -)
           echo "$branches"
-          #max_version=$(echo "$branches" | awk -F'/' '{print $NF}' | sort -V | tail -n 1)
-          #max_branch=$(echo "$branches" | grep "$max_version")
-          #echo "$max_version"
-          #echo "$max_branch"
-
 
       - name: Set up Git
         run: |
