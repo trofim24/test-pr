@@ -78,6 +78,7 @@ jobs:
 
           max_branch=$(echo "$branches2" | grep "$max_version")
           echo "$max_branch"
+          echo "max_branch=$max_branch" >> $GITHUB_ENV
 
       - name: Set up Git
         run: |
@@ -86,6 +87,11 @@ jobs:
 
       - name: Generate docs for each branch
         run: |
+          echo "-------------------------------------------"
+          git -C build_tools switch "$max_branch" || echo "Failed to switch $max_branch in build_tools"
+          echo "$max_branch"
+          echo "-------------------------------------------"
+
           for branch in $(echo "$branches" | tr ',' '\n'); do
             echo "-------------------------------------------"
             echo "Branch: $branch"
