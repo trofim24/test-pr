@@ -72,7 +72,7 @@ jobs:
         with:
           repository: ONLYOFFICE/sdkjs
           token: ${{ secrets.READ_PAT }}
-          ref: $build_branch
+          ref: ${{ env.build_branch }}
           path: sdkjs
 
       - name: Set up Git
