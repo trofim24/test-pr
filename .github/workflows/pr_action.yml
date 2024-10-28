@@ -79,6 +79,7 @@ jobs:
       - name: Generate docs for each branch
         run: |
           for branch in $(echo "$branches" | tr ',' '\n'); do
+            echo "-------------------------------------------"
             echo "Branch: $branch"
             git -C build_tools switch "$branch" || echo "Failed to switch $branch in build_tools"
             if [ ! -d "build_tools/scripts/sdkjs_common/jsdoc" ]; then
