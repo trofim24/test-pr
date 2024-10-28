@@ -59,7 +59,7 @@ jobs:
 
       - name: Fetch all repos without tags
         run: |
-          #git -C build_tools fetch --no-tags || echo "Failed to fetch in build_tools"
+          git -C build_tools fetch --no-tags || echo "Failed to fetch in build_tools"
           #git -C office-js-api-declarations fetch --no-tags || echo "Failed to fetch in office-js-api-declarations"
           #git -C office-js-api fetch --no-tags || echo "Failed to fetch in office-js-api"
           #git -C sdkjs fetch --no-tags || echo "Failed to fetch in sdkjs"
