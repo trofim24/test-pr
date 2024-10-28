@@ -41,14 +41,6 @@ jobs:
           ref: master
           path: office-js-api
 
-      - name: Checkout sdkjs repository
-        uses: actions/checkout@v4
-        with:
-          repository: ONLYOFFICE/sdkjs
-          token: ${{ secrets.READ_PAT }}
-          ref: master
-          path: sdkjs
-
       - name: Checkout sdkjs-forms repository
         uses: actions/checkout@v4
         with:
@@ -67,18 +59,21 @@ jobs:
 
       - name: Set env
         run: |
-          branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | sed 's|origin/||; s/^ *//; s/ *$//' | paste -sd "," -)
-          echo "$branches"
+          branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | awk '{sub("origin/", ""); print}')
+          echo "List of release/hotfix branches: $branches"
 
-          branches2=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | awk '{sub("origin/", ""); print}')
-          echo "$branches2"
+          max_version=$(echo "$branches" | awk -F'/' '{print $NF}' | sort -V | tail -n 1)
+          max_branch=$(echo "$branches" | grep "$max_version" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          echo "Branch for build: $max_branch"
+          echo "build_branch=$max_branch" >> $GITHUB_ENV
 
-          max_version=$(echo "$branches2" | awk -F'/' '{print $NF}' | sort -V | tail -n 1)
-          echo "$max_version"
-
-          max_branch=$(echo "$branches2" | grep "$max_version" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-          echo "$max_branch"
-          echo "max_branch=$max_branch" >> $GITHUB_ENV
+      - name: Checkout sdkjs repository
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/sdkjs
+          token: ${{ secrets.READ_PAT }}
+          ref: $build_branch
+          path: sdkjs
 
       - name: Set up Git
         run: |
