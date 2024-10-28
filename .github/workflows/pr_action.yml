@@ -80,6 +80,7 @@ jobs:
         run: |
           for branch in $(echo "$branches" | tr ',' '\n'); do
             echo "Branch: $branch"
+            git -C office-js-api-declarations reset --hard HEAD || echo "Failed to reset in office-js-api-declarations"
             git -C office-js-api-declarations switch "master" || echo "Failed to switch master in office-js-api-declarations"
             git -C office-js-api-declarations switch "$branch" || git -C office-js-api-declarations switch -c "$branch" || echo "Failed to create $branch in office-js-api-declarations"
 
