@@ -101,7 +101,7 @@ jobs:
             python generate_docs_plugins_json.py
             cd ../../../../
 
-            if git -C office-js-api-declarations diff --exit-code; then
+            if ! git -C office-js-api-declarations diff --exit-code; then
               git -C office-js-api-declarations add .
               git -C office-js-api-declarations commit -m "Add documentation update from GitHub Actions"
               git -C office-js-api-declarations push origin $branch
