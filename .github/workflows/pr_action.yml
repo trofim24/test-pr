@@ -80,30 +80,31 @@ jobs:
         run: |
           for branch in $(echo "$branches" | tr ',' '\n'); do
             echo "Branch: $branch"
+            git -C build_tools switch "$branch" || echo "Failed to switch $branch in build_tools"
+            if [ ! -d "build_tools/scripts/sdkjs_common/jsdoc" ]; then
+              echo "Directory for build does not exist. Skipping $branch branch."
+              continue
+            fi
+            
             git -C office-js-api-declarations reset --hard HEAD || echo "Failed to reset in office-js-api-declarations"
             git -C office-js-api-declarations switch "master" || echo "Failed to switch master in office-js-api-declarations"
             git -C office-js-api-declarations switch "$branch" || git -C office-js-api-declarations switch -c "$branch" || echo "Failed to create $branch in office-js-api-declarations"
 
-            git -C build_tools switch "$branch" || echo "Failed to switch $branch in build_tools"
             git -C office-js-api switch "$branch" || echo "Failed to switch $branch in office-js-api"
             git -C sdkjs switch "$branch" || echo "Failed to switch $branch in sdkjs"
             git -C sdkjs-forms switch "$branch" || echo "Failed to switch $branch in sdkjs-forms"
 
-            if [ -d "build_tools/scripts/sdkjs_common/jsdoc" ]; then
-              cd build_tools/scripts/sdkjs_common/jsdoc
-              npm install
-              python generate_docs_json.py
-              python generate_docs_plugins_json.py
-              cd ../../../../
+            cd build_tools/scripts/sdkjs_common/jsdoc
+            npm install
+            python generate_docs_json.py
+            python generate_docs_plugins_json.py
+            cd ../../../../
 
-              if git -C office-js-api-declarations diff --exit-code; then
-                git -C office-js-api-declarations add .
-                git -C office-js-api-declarations commit -m "Add documentation update from GitHub Actions"
-                git -C office-js-api-declarations push origin $branch
-              else
-                echo "Nothing to commit in $branch in office-js-api-declarations"
-              fi
+            if git -C office-js-api-declarations diff --exit-code; then
+              git -C office-js-api-declarations add .
+              git -C office-js-api-declarations commit -m "Add documentation update from GitHub Actions"
+              git -C office-js-api-declarations push origin $branch
             else
-              echo "Directory for build does not exist. Skipping $branch branch."
+              echo "Nothing to commit in $branch in office-js-api-declarations"
             fi
           done
