@@ -76,6 +76,9 @@ jobs:
           max_version=$(echo "$branches2" | awk -F'/' '{print $NF}' | sort -V | tail -n 1)
           echo "$max_version"
 
+          max_branch=$(echo "$branches" | grep "$max_version")
+          echo "$max_branch"
+
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
