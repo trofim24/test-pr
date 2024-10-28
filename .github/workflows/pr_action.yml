@@ -70,6 +70,9 @@ jobs:
           branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | sed 's|origin/||; s/^ *//; s/ *$//' | paste -sd "," -)
           echo "$branches"
 
+          branches2=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | awk '{sub("origin/", ""); print}')
+          echo "$branches2"
+
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
