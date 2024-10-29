@@ -64,6 +64,9 @@ jobs:
           ref: ${{ env.build_branch }}
           path: sdkjs-forms
 
+      - name: Set config to run
+        run: echo '{ "branch": "'${build_branch}'", "build": "latest" }'
+
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
