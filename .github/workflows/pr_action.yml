@@ -26,23 +26,23 @@ jobs:
         working-directory: ./Dep.Tests
         run: git submodule update --init puppeteer/files
 
-      - name: Get submodule
-        working-directory: ./Dep.Tests
+      - name: Install dependencies
         run: |
-            git submodule init ./puppeteer/files
-            git submodule update ./puppeteer/files
-          
-      - uses: browser-actions/setup-chrome@v1
+          sudo apt-get update
+          sudo apt install libnss
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 120
           
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 20
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
+          python-version: '3.10'
 
       - name: Prepare env
         run: python install.py
