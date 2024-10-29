@@ -39,6 +39,9 @@ jobs:
 
       - name: Check release/hotfix branch for build
         run: |
+          branch=$(python build_tools/scripts/sdkjs_common/jsdoc/get_latest_branch.py)
+          echo "Test branch: $branch"
+          
           branches=$(git -C build_tools branch -r | grep -E 'origin/(release/v|hotfix/v)' | awk '{sub("origin/", ""); print}')
           echo "List of release/hotfix branches: $branches"
 
