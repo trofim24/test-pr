@@ -20,7 +20,8 @@ jobs:
           ref: master
 
       - name: Update submodules
-        run: git -C Dep.Tests submodule update --init puppeteer/files
+        working-directory: ./Dep.Tests
+        run: git submodule update --init puppeteer/files
 
       - name: Set submodule pat token
         run: git config --global url."https://${{ secrets.PAT_TOKEN }}:@github.com/".insteadOf "https://github.com/"
