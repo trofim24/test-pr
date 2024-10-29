@@ -9,7 +9,7 @@ defaults:
     
 jobs:
   puppeteer-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Dep.tests
         uses: actions/checkout@v4
@@ -17,8 +17,10 @@ jobs:
           repository: ONLYOFFICE-QA/Dep.Tests
           token: ${{ secrets.READ_PAT }}
           path: Dep.Tests
-          submodules: true
           ref: master
+
+      - name: Update submodules
+        run: git -C Dep.Tests submodule update --init puppeteer/files
 
       - name: Set submodule pat token
         run: git config --global url."https://${{ secrets.PAT_TOKEN }}:@github.com/".insteadOf "https://github.com/"
