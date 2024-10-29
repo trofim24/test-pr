@@ -65,7 +65,7 @@ jobs:
           path: sdkjs-forms
 
       - name: Set config to run
-        run: echo "{ \"branch\": \"${build_branch}\", \"build\": \"latest\" }" > Dep.Tests/docbuilder-docs/config.json
+        run: echo '$build_branch'
 
       - name: Set up Git
         run: |
