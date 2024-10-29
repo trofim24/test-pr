@@ -65,7 +65,7 @@ jobs:
           path: sdkjs-forms
 
       - name: Set config to run
-        run: 'echo "1 : 1"'
+        run: 'echo 1 : 1'
 
       - name: Set up Git
         run: |
