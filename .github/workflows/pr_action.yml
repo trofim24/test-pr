@@ -17,13 +17,8 @@ jobs:
           repository: ONLYOFFICE-QA/Dep.Tests
           token: ${{ secrets.READ_PAT }}
           path: Dep.Tests
-
-      - name: Checkout build-tools
-        uses: actions/checkout@v4
-        with:
-          repository: ONLYOFFICE/build_tools
-          token: ${{ secrets.READ_PAT }}
-          path: build_tools
+          submodules: true
+          ref: master
 
       - name: Set submodule pat token
         run: git config --global url."https://${{ secrets.PAT_TOKEN }}:@github.com/".insteadOf "https://github.com/"
