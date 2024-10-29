@@ -30,7 +30,6 @@ jobs:
         uses: browser-actions/setup-chrome@v1
         id: setup-chrome
         with:
-          chrome-version: 120
           install-dependencies: true
 
       - name: Set up Node.js
