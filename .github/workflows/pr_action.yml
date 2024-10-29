@@ -42,7 +42,7 @@ jobs:
 
       - name: Prepare env
         run: |
-          ${{ steps.setup-chrome.outputs.chrome-path }} --version
+          ln -s ${{ steps.setup-chrome.outputs.chrome-path }} /usr/bin/google-chrome-stable
           npm install
 
       - name: Run puppeteer
