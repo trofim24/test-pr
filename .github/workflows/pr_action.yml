@@ -2,89 +2,94 @@ on:
   push:
     branches: '**'
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./Dep.Tests/puppeteer/engine
+    
 jobs:
-  mirror:
-    runs-on: ubuntu-latest
+  puppeteer-test:
+    runs-on: ubuntu-22.04
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-
-      - name: check out repository
+      - name: Checkout Dep.tests
         uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE-QA/Dep.Tests
+          token: ${{ secrets.READ_PAT }}
+          path: Dep.Tests
 
-      - name: Checkout build_tools repository
+      - name: Checkout build-tools
         uses: actions/checkout@v4
         with:
           repository: ONLYOFFICE/build_tools
           token: ${{ secrets.READ_PAT }}
-          ref: master
           path: build_tools
 
-      - name: Checkout repository with examples office-js-api-declarations
-        uses: actions/checkout@v4
-        with:
-          repository: ONLYOFFICE/office-js-api-declarations
-          token: ${{ secrets.READ_PAT }}
-          ref: develop
-          path: office-js-api-declarations
-
-      - name: Check release/hotfix branch for build
+      - name: Set submodule pat token
+        run: git config --global url."https://${{ secrets.PAT_TOKEN }}:@github.com/".insteadOf "https://github.com/"
+        
+      - name: Get submodule
+        working-directory: ./Dep.Tests
         run: |
-          cd build_tools/scripts/sdkjs_common/jsdoc
-          branch=$(python get_latest_branch.py)
-          echo "Branch for build: $branch"
-          echo "build_branch=$branch" >> $GITHUB_ENV
-
-      - name: Checkout repository with examples office-js-api
-        uses: actions/checkout@v4
+            git submodule init ./puppeteer/files
+            git submodule update ./puppeteer/files
+          
+      - uses: browser-actions/setup-chrome@v1
         with:
-          repository: ONLYOFFICE/office-js-api
-          token: ${{ secrets.READ_PAT }}
-          ref: master
-          path: office-js-api
-
-      - name: Checkout sdkjs repository
-        uses: actions/checkout@v4
+          chrome-version: 120
+          
+      - uses: actions/setup-node@v4
         with:
-          repository: ONLYOFFICE/sdkjs
-          token: ${{ secrets.READ_PAT }}
-          ref: ${{ env.build_branch }}
-          path: sdkjs
+          node-version: 20
 
-      - name: Checkout sdkjs-forms repository
-        uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          repository: ONLYOFFICE/sdkjs-forms
-          token: ${{ secrets.READ_PAT }}
-          ref: ${{ env.build_branch }}
-          path: sdkjs-forms
+          python-version: '3.9'
 
-      - name: Set config to run
-        run: 'echo "{ \"branch\": \"${build_branch}\", \"build\": \"latest\" }"'
+      - name: Prepare env
+        run: python install.py
 
-      - name: Set up Git
+      - name: Run puppeteer
+        env:
+          CACHE_ENABLED: ${{ github.event.inputs.cache || true }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Generate docs for each branch
-        run: |
-          git -C build_tools switch "$build_branch" || echo "Failed to switch $build_branch in build_tools"
-          cd build_tools/scripts/sdkjs_common/jsdoc
-          npm install
-          python generate_docs_json.py
-          python generate_docs_plugins_json.py
-          cd ../../../../office-js-api-declarations
-
-          if ! git diff --exit-code; then
-            git add .
-            git commit -m "Add documentation update from GitHub Actions"
-            git push origin develop
-          else
-            echo "Nothing to commit"
+          # Prepare display
+          sudo Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
+          export DISPLAY=:99
+          
+          # Preload browser cache first
+          if $CACHE_ENABLED; then
+              python run.py config_chrome_linux.json --prcache
           fi
+          
+          # Run tests
+          python run.py config_chrome_linux.json ${{ github.event.inputs.params}} | tee -a ./outputfile
+
+      - name: Make job annotations
+        if: always()
+        run: |
+            if [[ -f ./outputfile && $(cat ./outputfile | egrep -i 'Check errors in') ]]; then
+             echo "### 🔴 Some puppeteer tests failed!" >> $GITHUB_STEP_SUMMARY
+             echo "" >> $GITHUB_STEP_SUMMARY
+             echo "Please check job artifacts for more info" >> $GITHUB_STEP_SUMMARY
+             echo "" >> $GITHUB_STEP_SUMMARY
+             echo '$${\color{red}FailedTests:}$$' >> $GITHUB_STEP_SUMMARY
+              while read p; do
+                if [[ $(echo "${p}" | egrep -i 'Check errors in') ]]; then
+                  st=$(echo "${p}" | egrep -i -o "\"${GITHUB_WORKSPACE}/(([a-zA-Z0-9.,_-]+)?/)+[a-zA-Z0-9.,_-]+.(.)\"" | tr -d '"')
+                  echo "${st}"
+                  echo "**${st}**" >> $GITHUB_STEP_SUMMARY
+                fi     
+              done <./outputfile
+              exit 1
+            else
+              echo "### ✅ All puppeteer tests is passed" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**NOTE:** Results artifacts can be downloaded anyway" >> $GITHUB_STEP_SUMMARY
+            fi
+          
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Pupeeteer-result
+          path: Dep.Tests/puppeteer/out
