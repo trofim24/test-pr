@@ -65,7 +65,7 @@ jobs:
           path: sdkjs-forms
 
       - name: Set config to run
-        run: echo '{ \"branch\": \"\", \"build\": \"latest\" }'
+        run: echo '{ "branch" }'
 
       - name: Set up Git
         run: |
