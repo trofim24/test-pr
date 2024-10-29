@@ -26,8 +26,10 @@ jobs:
         working-directory: ./Dep.Tests
         run: git submodule update --init puppeteer/files
 
-      - uses: browser-actions/setup-chrome@v1
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
         with:
+          chrome-version: 120
           install-dependencies: true
 
       - name: Set up Node.js
