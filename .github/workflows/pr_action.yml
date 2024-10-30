@@ -47,8 +47,10 @@ jobs:
           sudo ln -s ${{ steps.setup-chrome.outputs.chrome-path }} /usr/bin/google-chrome-stable
           npm install
 
+          echo "_________________________________"
           cd /usr/local/sbin/
           ls -l
+          echo "_________________________________"
 
       - name: Run puppeteer
         services: xvfb
