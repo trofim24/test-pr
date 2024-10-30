@@ -65,6 +65,9 @@ jobs:
           runuser -u pptruser -- ls -l
 
           echo "_________________________________"
+          runuser -u pptruser -- echo "$PWD"
+
+          echo "_________________________________"
           runuser -u pptruser:pptruser -c 'echo "$PWD"'
 
           echo "_________________________________"
