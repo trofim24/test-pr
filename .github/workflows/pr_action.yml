@@ -61,7 +61,7 @@ jobs:
             && chown -R pptruser:pptruser /home/pptruser \
             && chown -R pptruser:pptruser *
 
-          runuser -u pptruser -c 'echo "$PWD"'
+          
           runuser -u pptruser:pptruser -c 'echo "$PWD"'
 
           # Preload browser cache first
