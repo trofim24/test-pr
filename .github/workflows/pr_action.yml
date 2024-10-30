@@ -61,7 +61,8 @@ jobs:
             && chown -R pptruser:pptruser /home/pptruser \
             && chown -R pptruser:pptruser /node_modules \
             && chown -R pptruser:pptruser /package.json \
-            && chown -R pptruser:pptruser /package-lock.json
+            && chown -R pptruser:pptruser /package-lock.json \
+            && chown -R pptruser:pptruser *
 
           # Preload browser cache first
           if $CACHE_ENABLED; then
