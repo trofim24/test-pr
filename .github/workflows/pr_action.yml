@@ -66,6 +66,10 @@ jobs:
           echo "_________________________________"
           cat /etc/os-release
           echo "_________________________________"
+          sysctl user.max_user_namespaces
+          echo "_________________________________"
+          sudo sysctl -w user.max_user_namespaces=49152
+          echo "_________________________________"
           sudo sysctl -w kernel.unprivileged_userns_clone=1
 
           echo "_________________________________"
