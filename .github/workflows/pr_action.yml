@@ -9,7 +9,7 @@ defaults:
     
 jobs:
   puppeteer-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-noroot
     steps:
       - name: Checkout Dep.tests
         uses: actions/checkout@v4
@@ -54,55 +54,18 @@ jobs:
           # Prepare display
           sudo Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
           export DISPLAY=:99
-          
-          # Add user so we don't need --no-sandbox.
-          # same layer as npm install to keep re-chowned files from using up several hundred MBs more space
-          groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
-            && mkdir -p /home/pptruser/Downloads \
-            && chown -R pptruser:pptruser /home/pptruser \
-            && chown -R pptruser:pptruser ../../* \
-            && chown -R pptruser:pptruser *
-
-          echo "_________________________________"
-          cat /etc/os-release
-          echo "_________________________________"
-          sysctl user.max_user_namespaces
-          echo "_________________________________"
-          sudo sysctl -w user.max_user_namespaces=49152
-          echo "_________________________________"
-          sudo sysctl -w kernel.unprivileged_userns_clone=1
-
-          echo "_________________________________"
-          runuser -u pptruser -- ls -l
-
-          echo "_________________________________"
-          cd ~/.cache/puppeteer/chrome/
-          ls -l
-          echo "_________________________________"
-
-
-          # cd to Puppeteer cache directory (adjust the path if using a different cache directory).
-          cd ~/.cache/puppeteer/chrome/linux-<version>/chrome-linux64/
-          sudo chown root:root chrome_sandbox
-          sudo chmod 4755 chrome_sandbox
-          # copy sandbox executable to a shared location
-          sudo cp -p chrome_sandbox /usr/local/sbin/chrome-devel-sandbox
-          # export CHROME_DEVEL_SANDBOX env variable
-          export CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox
-
-          echo "_________________________________"
-          runuser -u pptruser -- echo "$PWD"
+    
 
           echo "_________________________________"
           # Preload browser cache first
           if $CACHE_ENABLED; then
-              runuser -u pptruser -- python run.py config_chrome_linux.json --prcache
+              python run.py config_chrome_linux.json --prcache
           fi
 
           echo "_________________________________"
 
           # Run tests
-          runuser -u pptruser -- python run.py config_chrome_linux.json ${{ github.event.inputs.params}} | tee -a ./outputfile
+          python run.py config_chrome_linux.json ${{ github.event.inputs.params}} | tee -a ./outputfile
 
           echo "_________________________________"
 
