@@ -66,11 +66,11 @@ jobs:
 
           # Preload browser cache first
           if $CACHE_ENABLED; then
-              runuser -u pptruser 'python run.py config_chrome_linux.json --prcache'
+              runuser -u pptruser:pptruser 'python run.py config_chrome_linux.json --prcache'
           fi
           
           # Run tests
-          runuser -u pptruser 'python run.py config_chrome_linux.json ${{ github.event.inputs.params}} | tee -a ./outputfile'
+          runuser -u pptruser:pptruser 'python run.py config_chrome_linux.json ${{ github.event.inputs.params}} | tee -a ./outputfile'
 
       - name: Make job annotations
         if: always()
