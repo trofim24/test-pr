@@ -61,9 +61,13 @@ jobs:
             && chown -R pptruser:pptruser /home/pptruser \
             && chown -R pptruser:pptruser *
 
-          
+          echo "_________________________________"
+          runuser -u pptruser -- ls -l
+
+          echo "_________________________________"
           runuser -u pptruser:pptruser -c 'echo "$PWD"'
 
+          echo "_________________________________"
           # Preload browser cache first
           if $CACHE_ENABLED; then
               runuser -u pptruser:pptruser -c 'python run.py config_chrome_linux.json --prcache'
