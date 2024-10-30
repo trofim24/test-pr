@@ -20,7 +20,9 @@ jobs:
           ref: master
 
       - name: Set submodule pat token
-        run: git config --global url."https://${{ secrets.READ_PAT }}:@git.onlyoffice.com/".insteadOf "https://git.onlyoffice.com/"
+        run: |
+          git config --global url."https://${{ secrets.READ_PAT }}:@git.onlyoffice.com/".insteadOf "https://git.onlyoffice.com/"
+          sudo rm -rf /opt/hostedtoolcache/setup-chrome/chromium/1375930
 
       - name: Update submodules
         working-directory: ./Dep.Tests
