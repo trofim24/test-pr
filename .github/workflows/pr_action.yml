@@ -64,6 +64,9 @@ jobs:
             && chown -R pptruser:pptruser /package-lock.json \
             && chown -R pptruser:pptruser *
 
+          runuser -u pptruser 'echo "$PWD"'
+          runuser -u pptruser:pptruser 'echo "$PWD"'
+
           # Preload browser cache first
           if $CACHE_ENABLED; then
               runuser -u pptruser:pptruser 'python run.py config_chrome_linux.json --prcache'
