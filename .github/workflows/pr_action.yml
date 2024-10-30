@@ -22,8 +22,7 @@ jobs:
       - name: Set submodule pat token
         run: |
           git config --global url."https://${{ secrets.READ_PAT }}:@git.onlyoffice.com/".insteadOf "https://git.onlyoffice.com/"
-          
-          sudo chown -R $USER:$USER /opt/
+
 
       - name: Update submodules
         working-directory: ./Dep.Tests
