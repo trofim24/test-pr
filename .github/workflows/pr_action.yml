@@ -61,6 +61,8 @@ jobs:
             && chown -R pptruser:pptruser /home/pptruser \
             && chown -R pptruser:pptruser *
 
+          cat /etc/os-release
+
           echo "_________________________________"
           runuser -u pptruser -- ls -l
 
