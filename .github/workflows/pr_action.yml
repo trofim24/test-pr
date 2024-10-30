@@ -62,7 +62,10 @@ jobs:
             && chown -R pptruser:pptruser ../../* \
             && chown -R pptruser:pptruser *
 
+          echo "_________________________________"
           cat /etc/os-release
+          echo "_________________________________"
+          sudo sysctl -w kernel.unprivileged_userns_clone=1
 
           echo "_________________________________"
           runuser -u pptruser -- ls -l
