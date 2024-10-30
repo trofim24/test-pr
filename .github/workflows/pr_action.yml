@@ -22,7 +22,9 @@ jobs:
       - name: Set submodule pat token
         run: |
           git config --global url."https://${{ secrets.READ_PAT }}:@git.onlyoffice.com/".insteadOf "https://git.onlyoffice.com/"
-          sudo rm -rf /opt/hostedtoolcache/setup-chrome/chromium/1375930
+          
+          sudo chown -R ec2-user:ec2-user /home/ec2-user/actions-runner
+          sudo chmod -R 755 /home/ec2-user/actions-runner
 
       - name: Update submodules
         working-directory: ./Dep.Tests
