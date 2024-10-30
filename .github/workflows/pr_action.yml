@@ -48,8 +48,7 @@ jobs:
           npm install
 
           echo "_________________________________"
-          cd /usr/local/sbin/
-          ls -l
+          export CHROME_DEVEL_SANDBOX=""
           echo "_________________________________"
 
       - name: Run puppeteer
