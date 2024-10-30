@@ -23,7 +23,6 @@ jobs:
         run: |
           git config --global url."https://${{ secrets.READ_PAT }}:@git.onlyoffice.com/".insteadOf "https://git.onlyoffice.com/"
 
-
       - name: Update submodules
         working-directory: ./Dep.Tests
         run: git submodule update --init puppeteer/files
@@ -45,7 +44,7 @@ jobs:
 
       - name: Prepare env
         run: |
-          ln -s ${{ steps.setup-chrome.outputs.chrome-path }} /usr/bin/google-chrome-stable
+          sudo ln -s ${{ steps.setup-chrome.outputs.chrome-path }} /usr/bin/google-chrome-stable
           npm install
 
       - name: Run puppeteer
@@ -56,7 +55,6 @@ jobs:
           # Prepare display
           sudo Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
           export DISPLAY=:99
-    
 
           echo "_________________________________"
           # Preload browser cache first
