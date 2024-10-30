@@ -23,10 +23,6 @@ jobs:
         run: |
           git config --global url."https://${{ secrets.READ_PAT }}:@git.onlyoffice.com/".insteadOf "https://git.onlyoffice.com/"
 
-          mkdir chrome_sandbox
-          sudo chown root:root chrome_sandbox && sudo chmod 4755 chrome_sandbox && \
-            export CHROME_DEVEL_SANDBOX="$PWD/chrome_sandbox"
-
       - name: Update submodules
         working-directory: ./Dep.Tests
         run: git submodule update --init puppeteer/files
@@ -50,6 +46,9 @@ jobs:
         run: |
           sudo ln -s ${{ steps.setup-chrome.outputs.chrome-path }} /usr/bin/google-chrome-stable
           npm install
+
+          cd /usr/local/sbin/
+          ls -l
 
       - name: Run puppeteer
         services: xvfb
