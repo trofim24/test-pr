@@ -4,107 +4,44 @@ on:
 
 defaults:
   run:
-    shell: bash
     working-directory: ./Dep.Tests/puppeteer/engine
     
 jobs:
   puppeteer-test:
-    runs-on: ubuntu-latest-noroot
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Dep.tests
         uses: actions/checkout@v4
         with:
           repository: ONLYOFFICE-QA/Dep.Tests
-          token: ${{ secrets.READ_PAT }}
           path: Dep.Tests
-          ref: master
+
+      - name: Checkout build-tools
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/build_tools
+          path: build_tools
 
       - name: Set submodule pat token
-        run: |
-          git config --global url."https://${{ secrets.READ_PAT }}:@git.onlyoffice.com/".insteadOf "https://git.onlyoffice.com/"
-
-      - name: Update submodules
-        working-directory: ./Dep.Tests
-        run: git submodule update --init puppeteer/files
-
-      - name: Install Chrome
-        uses: browser-actions/setup-chrome@v1
-        id: setup-chrome
-        with:
-          install-dependencies: true
-          install-chromedriver: true
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+        run: git config --global url."https://${{ secrets.PAT_TOKEN }}:@github.com/".insteadOf "https://github.com/"
         
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Get submodule
+        working-directory: ./Dep.Tests
+        run: |
+            git submodule init ./puppeteer/files
+            git submodule update ./puppeteer/files
+          
+      - uses: browser-actions/setup-chrome@v1
         with:
-          python-version: '3.10'
+          chrome-version: 120
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
 
       - name: Prepare env
-        run: |
-          sudo ln -s ${{ steps.setup-chrome.outputs.chrome-path }} /usr/bin/google-chrome-stable
-          npm install
-
-          echo "_________________________________"
-          echo "kernel.unprivileged_userns_clone"
-          cat /proc/sys/kernel/unprivileged_userns_clone
-          echo "_________________________________"
-
-          echo "_________________________________"
-          export CHROME_DEVEL_SANDBOX=""
-          echo "_________________________________"
-
-      - name: Run puppeteer
-        services: xvfb
-        env:
-          CACHE_ENABLED: ${{ github.event.inputs.cache || true }}
-        run: |
-          export CHROME_DEVEL_SANDBOX="$PWD/chrome_sandbox"
-
-          # Prepare display
-          sudo Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
-          export DISPLAY=:99
-
-          echo "_________________________________"
-          # Preload browser cache first
-          if $CACHE_ENABLED; then
-              python run.py config_chrome_linux.json --prcache
-          fi
-
-          echo "_________________________________"
-
-          # Run tests
-          python run.py config_chrome_linux.json ${{ github.event.inputs.params}} | tee -a ./outputfile
-
-          echo "_________________________________"
-
-      - name: Make job annotations
-        if: always()
-        run: |
-            if [[ -f ./outputfile && $(cat ./outputfile | egrep -i 'Check errors in') ]]; then
-             echo "### 🔴 Some puppeteer tests failed!" >> $GITHUB_STEP_SUMMARY
-             echo "" >> $GITHUB_STEP_SUMMARY
-             echo "Please check job artifacts for more info" >> $GITHUB_STEP_SUMMARY
-             echo "" >> $GITHUB_STEP_SUMMARY
-             echo '$${\color{red}FailedTests:}$$' >> $GITHUB_STEP_SUMMARY
-              while read p; do
-                if [[ $(echo "${p}" | egrep -i 'Check errors in') ]]; then
-                  st=$(echo "${p}" | egrep -i -o "\"${GITHUB_WORKSPACE}/(([a-zA-Z0-9.,_-]+)?/)+[a-zA-Z0-9.,_-]+.(.)\"" | tr -d '"')
-                  echo "${st}"
-                  echo "**${st}**" >> $GITHUB_STEP_SUMMARY
-                fi     
-              done <./outputfile
-              exit 1
-            else
-              echo "### ✅ All puppeteer tests is passed" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              echo "**NOTE:** Results artifacts can be downloaded anyway" >> $GITHUB_STEP_SUMMARY
-            fi
-          
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Pupeeteer-result
-          path: Dep.Tests/puppeteer/out
+        run: python install.py
