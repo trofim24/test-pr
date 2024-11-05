@@ -48,6 +48,11 @@ jobs:
           npm install
 
           echo "_________________________________"
+          echo "kernel.unprivileged_userns_clone"
+          echo kernel.unprivileged_userns_clone
+          echo "_________________________________"
+
+          echo "_________________________________"
           export CHROME_DEVEL_SANDBOX=""
           echo "_________________________________"
 
