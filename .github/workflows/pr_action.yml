@@ -49,7 +49,7 @@ jobs:
 
           echo "_________________________________"
           echo "kernel.unprivileged_userns_clone"
-          echo kernel.unprivileged_userns_clone
+          cat /proc/sys/kernel/unprivileged_userns_clone
           echo "_________________________________"
 
           echo "_________________________________"
