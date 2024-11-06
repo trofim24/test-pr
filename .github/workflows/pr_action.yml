@@ -4,6 +4,7 @@ on:
 
 defaults:
   run:
+    shell: bash
     working-directory: ./Dep.Tests/puppeteer/engine
     
 jobs:
