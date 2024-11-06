@@ -26,17 +26,22 @@ jobs:
         working-directory: ./Dep.Tests
         run: git submodule update --init puppeteer/files
 
-      - uses: browser-actions/setup-chrome@v1
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
         with:
-          chrome-version: 120
+          install-dependencies: true
+          install-chromedriver: true
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 20
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
+          python-version: '3.10'
 
       - name: Prepare env
-        run: python install.py
+        run: |
+          sudo ln -s ${{ steps.setup-chrome.outputs.chrome-path }} /usr/bin/google-chrome-stable
+          npm install
