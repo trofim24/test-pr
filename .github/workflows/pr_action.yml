@@ -20,16 +20,16 @@ jobs:
           ref: master
 
       - name: Set submodule pat token
-        run: git config --global url."https://${{ secrets.READ_PAT }}:@github.com/".insteadOf "https://github.com/"
-        
+        run: git config --global url."https://${{ secrets.READ_PAT }}:@git.onlyoffice.com/".insteadOf "https://git.onlyoffice.com/"
+
       - name: Update submodules
         working-directory: ./Dep.Tests
         run: git submodule update --init puppeteer/files
-          
+
       - uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 120
-          
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
