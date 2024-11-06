@@ -21,11 +21,9 @@ jobs:
       - name: Set submodule pat token
         run: git config --global url."https://${{ secrets.READ_PAT }}:@github.com/".insteadOf "https://github.com/"
         
-      - name: Get submodule
+      - name: Update submodules
         working-directory: ./Dep.Tests
-        run: |
-            git submodule init ./puppeteer/files
-            git submodule update ./puppeteer/files
+        run: git submodule update --init puppeteer/files
           
       - uses: browser-actions/setup-chrome@v1
         with:
