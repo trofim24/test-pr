@@ -45,3 +45,8 @@ jobs:
         run: |
           sudo ln -s ${{ steps.setup-chrome.outputs.chrome-path }} /usr/bin/google-chrome-stable
           npm install
+
+      - name: Run puppeteer
+        run: |
+          # Run tests
+          python run.py config_chrome_linux.json
