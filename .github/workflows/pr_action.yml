@@ -50,7 +50,7 @@ jobs:
           # Run tests
           python run.py tests/edit/console/speed.js | tee -a ./outputfile
 
-      - uses: actions/upload-artifact@v4
+      - uses: christopherhx/gitea-upload-artifact@v4
         if: always()
         with:
           name: Pupeeteer-result
